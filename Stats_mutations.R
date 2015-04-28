@@ -79,17 +79,17 @@ write.csv(MutationsPerSample,file="Mutations_per_sample.csv")
 ADrep1=ADratios[,rep[,1]]
 ADrep2=ADratios[,rep[,2]]
 
-pdf("Allele_ratios_pairs.pdf")
-for(i in 1:ncol(ADrep1))
-{
-  plot(ADrep1[,i],ADrep2[,i],
-       xlab=paste("Sample",rep[i,1],"allele frequency"),ylab=paste("Sample",rep[i,2],"allele frequency"),
-       main=paste("cor=",cor(ADrep1[,i],ADrep2[,i],use="pairwise.complete")),
-       xlim=c(0,1),ylim=c(0,1))
-  abline(0,1)
-  #print(table(!is.na(ADrep1[,i]),!is.na(ADrep2[,i]!=0)))
-}
-dev.off()
+# pdf("Allele_ratios_pairs.pdf")
+# for(i in 1:ncol(ADrep1))
+# {
+#   plot(ADrep1[,i],ADrep2[,i],
+#        xlab=paste("Sample",rep[i,1],"allele frequency"),ylab=paste("Sample",rep[i,2],"allele frequency"),
+#        main=paste("cor=",cor(ADrep1[,i],ADrep2[,i],use="pairwise.complete")),
+#        xlim=c(0,1),ylim=c(0,1))
+#   abline(0,1)
+#   #print(table(!is.na(ADrep1[,i]),!is.na(ADrep2[,i]!=0)))
+# }
+# dev.off()
 
 ADratios_null=ADratios
 ADratios_null[is.na(ADratios)]=0
@@ -140,33 +140,33 @@ write.csv(mutatedpersample,file = "Mutated_nonsynonymous_gene_per_sample.csv")
 write.csv(MutationsPerSample[index_changeprot,],file="Mutations_nonsynonymous_per_sample.csv")
 
 
-pdf("Allele_ratios_pairs_null_proteinchange.pdf")
-for(i in 1:ncol(ADrep1))
-{
-  plot(ADrep1[index_changeprot,i],ADrep2[index_changeprot,i],
-       xlab=paste("Sample",rep[i,1],"allele frequency"),ylab=paste("Sample",rep[i,2],"allele frequency"),
-       main=paste("cor=",cor(ADrep1[index_changeprot,i],ADrep2[index_changeprot,i],use="pairwise.complete")),
-       xlim=c(0,1),ylim=c(0,1),col=c(3,1,2)[bigtable$design2-bigtable$design3+2][index_changeprot])
-  abline(0,1)
-  #print(table(!is.na(ADrep1[,i]),!is.na(ADrep2[,i]!=0)))
-}
-dev.off()
-
-
-#removing recurrent ones
-recurrent=as.numeric(names(which(table(unlist(second))>=5)))
-ADrep1=ADratios_null[-recurrent,rep[,1]]
-ADrep2=ADratios_null[-recurrent,rep[,2]]
-
-pdf("Allele_ratios_pairs_null_norecurrent.pdf")
-for(i in 1:ncol(ADrep1))
-{
-  plot(ADrep1[,i],ADrep2[,i],
-       xlab=paste("Sample",rep[i,1],"allele frequency"),ylab=paste("Sample",rep[i,2],"allele frequency"),
-       main=paste("cor=",cor(ADrep1[,i],ADrep2[,i],use="pairwise.complete")),
-       xlim=c(0,1),ylim=c(0,1))
-  abline(0,1)
-  #print(table(!is.na(ADrep1[,i]),!is.na(ADrep2[,i]!=0)))
-}
-dev.off()
-
+# pdf("Allele_ratios_pairs_null_proteinchange.pdf")
+# for(i in 1:ncol(ADrep1))
+# {
+#   plot(ADrep1[index_changeprot,i],ADrep2[index_changeprot,i],
+#        xlab=paste("Sample",rep[i,1],"allele frequency"),ylab=paste("Sample",rep[i,2],"allele frequency"),
+#        main=paste("cor=",cor(ADrep1[index_changeprot,i],ADrep2[index_changeprot,i],use="pairwise.complete")),
+#        xlim=c(0,1),ylim=c(0,1),col=c(3,1,2)[bigtable$design2-bigtable$design3+2][index_changeprot])
+#   abline(0,1)
+#   #print(table(!is.na(ADrep1[,i]),!is.na(ADrep2[,i]!=0)))
+# }
+# dev.off()
+# 
+# 
+# #removing recurrent ones
+# recurrent=as.numeric(names(which(table(unlist(second))>=5)))
+# ADrep1=ADratios_null[-recurrent,rep[,1]]
+# ADrep2=ADratios_null[-recurrent,rep[,2]]
+# 
+# pdf("Allele_ratios_pairs_null_norecurrent.pdf")
+# for(i in 1:ncol(ADrep1))
+# {
+#   plot(ADrep1[,i],ADrep2[,i],
+#        xlab=paste("Sample",rep[i,1],"allele frequency"),ylab=paste("Sample",rep[i,2],"allele frequency"),
+#        main=paste("cor=",cor(ADrep1[,i],ADrep2[,i],use="pairwise.complete")),
+#        xlim=c(0,1),ylim=c(0,1))
+#   abline(0,1)
+#   #print(table(!is.na(ADrep1[,i]),!is.na(ADrep2[,i]!=0)))
+# }
+# dev.off()
+# 
