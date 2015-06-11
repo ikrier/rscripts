@@ -21,7 +21,7 @@
 rm(list=ls())
 setwd("/data/annotate_sophia")
 
-bigtable=read.table("myanno.hg19_multianno.txt",header=1,sep="\t",stringsAsFactors = F)
+bigtable=read.table("myanno.hg19_multianno.txt",sep="\t",stringsAsFactors = F,header=1)
 bigtable$X=NULL
 bigtable$Gene.refGene=as.character(unlist(sapply(bigtable$Gene.refGene,function(x){unlist(strsplit(x,":"))[1]})))
 
@@ -43,7 +43,7 @@ plot(density(apply(ADratios,1,max,na.rm=T)),main="Distribution des maxima de fr√
 
 rep=read.csv("Pairs_replicates.tsv",sep=",",colClasses=c("numeric","numeric","character","character"))
 
-MutationsPerSample=bigtable[,grep("GT",colnames(bigtable))]
+MutationsPerSample=as.matrix(bigtable[,grep("GT",colnames(bigtable))])
 MutationsPerSample[ADratios<0.05]="None"
 
 #Get the things that were called in the second version and not the third :
@@ -79,17 +79,17 @@ write.csv(MutationsPerSample,file="Mutations_per_sample.csv")
 ADrep1=ADratios[,rep[,1]]
 ADrep2=ADratios[,rep[,2]]
 
-# pdf("Allele_ratios_pairs.pdf")
-# for(i in 1:ncol(ADrep1))
-# {
-#   plot(ADrep1[,i],ADrep2[,i],
-#        xlab=paste("Sample",rep[i,1],"allele frequency"),ylab=paste("Sample",rep[i,2],"allele frequency"),
-#        main=paste("cor=",cor(ADrep1[,i],ADrep2[,i],use="pairwise.complete")),
-#        xlim=c(0,1),ylim=c(0,1))
-#   abline(0,1)
-#   #print(table(!is.na(ADrep1[,i]),!is.na(ADrep2[,i]!=0)))
-# }
-# dev.off()
+pdf("Allele_ratios_pairs.pdf")
+for(i in 1:ncol(ADrep1))
+{
+  plot(ADrep1[,i],ADrep2[,i],
+       xlab=paste("Sample",rep[i,1],"allele frequency"),ylab=paste("Sample",rep[i,2],"allele frequency"),
+       main=paste("cor=",cor(ADrep1[,i],ADrep2[,i],use="pairwise.complete")),
+       xlim=c(0,1),ylim=c(0,1))
+  abline(0,1)
+  #print(table(!is.na(ADrep1[,i]),!is.na(ADrep2[,i]!=0)))
+}
+dev.off()
 
 ADratios_null=ADratios
 ADratios_null[is.na(ADratios)]=0
@@ -101,28 +101,28 @@ index_changeprot=c(grep("nonsynonymous",bigtable$ExonicFunc.refGene),grep("frame
 isinchangeprot=1:nrow(bigtable)%in%index_changeprot
 relevant=bigtable$design2&bigtable$design3
 
-# pdf("Allele_ratios_pairs_null.pdf")
-# for(i in 1:ncol(ADrep1))
-# {
-#   isnotnullboth=ADrep1[,i]>0|ADrep2[,i]>0
-#   plot(ADrep1[isnotnullboth,i],ADrep2[isnotnullboth,i],
-#        xlab=paste("Sample ",rep[i,1]," (",rep[i,3],")"," allele frequency",sep=""),ylab=paste("Sample ",rep[i,2]," (",rep[i,4],")"," allele frequency",sep=""),
-#        main=paste("cor=",format(cor(ADrep1[relevant&isnotnullboth,i],ADrep2[relevant&isnotnullboth,i],use="pairwise.complete"),digits = 2)),
-#        xlim=c(0,1),ylim=c(0,1),col=c(3,1,2)[bigtable$design2-bigtable$design3+2][isnotnullboth],pch=c(1,2)[isinchangeprot+1][isnotnullboth])
-#   abline(0,1)
-#   text(ADrep1[isnotnullboth,i],ADrep2[isnotnullboth,i],labels=bigtable$Gene.refGene[isnotnullboth],cex = 0.5,pos = 3)
-#   #print(table(!is.na(ADrep1[,i]),!is.na(ADrep2[,i]!=0)))
-#   write.table(bigtable[isnotnullboth,c(1,2,3,4,
-#                                        which(colnames(bigtable)=="Gene.refGene"),
-#                                        ncol(bigtable)-1,ncol(bigtable),
-#                                        as.numeric(rbind(grep(paste("Sample_",rep[i,1],"_",sep=""),colnames(bigtable)),
-#                                                         grep(paste("Sample_",rep[i,2],"_",sep=""),colnames(bigtable)))))],
-#               file=paste("comptable",rep[i,1],"-",rep[i,2],".txt",sep=""),
-#               quote=F,sep="\t",row.names=F)
-#   legend(x="top",y="top",legend = c("Non-synonymous","Synonymous","Present in both assays","Present only in assay 2","Present only in assay 3"),
-#          col = c(1,1,1,2,3),pch = c(2,1,NA,NA,NA),lty=c(NA,NA,1,1,1),lwd=c(1,1,1,1,1))
-# }
-# dev.off()
+pdf("Allele_ratios_pairs_null.pdf")
+for(i in 1:ncol(ADrep1))
+{
+  isnotnullboth=ADrep1[,i]>0|ADrep2[,i]>0
+  plot(ADrep1[isnotnullboth,i],ADrep2[isnotnullboth,i],
+       xlab=paste("Sample ",rep[i,1]," (",rep[i,3],")"," allele frequency",sep=""),ylab=paste("Sample ",rep[i,2]," (",rep[i,4],")"," allele frequency",sep=""),
+       main=paste("cor=",format(cor(ADrep1[relevant&isnotnullboth,i],ADrep2[relevant&isnotnullboth,i],use="pairwise.complete"),digits = 2)),
+       xlim=c(0,1),ylim=c(0,1),col=c(3,1,2)[bigtable$design2-bigtable$design3+2][isnotnullboth],pch=c(1,2)[isinchangeprot+1][isnotnullboth])
+  abline(0,1)
+  text(ADrep1[isnotnullboth,i],ADrep2[isnotnullboth,i],labels=bigtable$Gene.refGene[isnotnullboth],cex = 0.5,pos = 3)
+  #print(table(!is.na(ADrep1[,i]),!is.na(ADrep2[,i]!=0)))
+  write.table(bigtable[isnotnullboth,c(1,2,3,4,
+                                       which(colnames(bigtable)=="Gene.refGene"),
+                                       ncol(bigtable)-1,ncol(bigtable),
+                                       as.numeric(rbind(grep(paste("Sample_",rep[i,1],"_",sep=""),colnames(bigtable)),
+                                                        grep(paste("Sample_",rep[i,2],"_",sep=""),colnames(bigtable)))))],
+              file=paste("comptable",rep[i,1],"-",rep[i,2],".txt",sep=""),
+              quote=F,sep="\t",row.names=F)
+  legend(x="top",y="top",legend = c("Non-synonymous","Synonymous","Present in both assays","Present only in assay 2","Present only in assay 3"),
+         col = c(1,1,1,2,3),pch = c(2,1,NA,NA,NA),lty=c(NA,NA,1,1,1),lwd=c(1,1,1,1,1))
+}
+dev.off()
 
 
 
