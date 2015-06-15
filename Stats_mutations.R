@@ -73,23 +73,29 @@ colSums(mutatedpersample)
 write.csv(mutatedpersample,file = "Mutated_gene_per_sample.csv")
 
 MutationsPerSample=cbind(bigtable$Gene.refGene,bigtable$REF,bigtable$ALT,bigtable$AAChange.refGene,bigtable$Func.refGene,bigtable$TYPE,bigtable$ExonicFunc.refGene,MutationsPerSample)
+ADratios_null=ADratios
+ADratios_null[is.na(ADratios)]=0
+ADratios_null[ADratios<0.05]=0
+MutationsPerSample_percent=cbind(bigtable$Gene.refGene,bigtable$REF,bigtable$ALT,bigtable$AAChange.refGene,bigtable$Func.ref7Gene,bigtable$TYPE,bigtable$ExonicFunc.refGene,ADratios_null)
 
 write.csv(MutationsPerSample,file="Mutations_per_sample.csv")
+
+write.csv(MutationsPerSample_percent,file="Mutations_per_sample_percentages.csv")
 
 ADrep1=ADratios[,rep[,1]]
 ADrep2=ADratios[,rep[,2]]
 
-pdf("Allele_ratios_pairs.pdf")
-for(i in 1:ncol(ADrep1))
-{
-  plot(ADrep1[,i],ADrep2[,i],
-       xlab=paste("Sample",rep[i,1],"allele frequency"),ylab=paste("Sample",rep[i,2],"allele frequency"),
-       main=paste("cor=",cor(ADrep1[,i],ADrep2[,i],use="pairwise.complete")),
-       xlim=c(0,1),ylim=c(0,1))
-  abline(0,1)
-  #print(table(!is.na(ADrep1[,i]),!is.na(ADrep2[,i]!=0)))
-}
-dev.off()
+# pdf("Allele_ratios_pairs.pdf")
+# for(i in 1:ncol(ADrep1))
+# {
+#   plot(ADrep1[,i],ADrep2[,i],
+#        xlab=paste("Sample",rep[i,1],"allele frequency"),ylab=paste("Sample",rep[i,2],"allele frequency"),
+#        main=paste("cor=",cor(ADrep1[,i],ADrep2[,i],use="pairwise.complete")),
+#        xlim=c(0,1),ylim=c(0,1))
+#   abline(0,1)
+#   #print(table(!is.na(ADrep1[,i]),!is.na(ADrep2[,i]!=0)))
+# }
+# dev.off()
 
 ADratios_null=ADratios
 ADratios_null[is.na(ADratios)]=0
@@ -138,7 +144,7 @@ colSums(mutatedpersample)
 
 write.csv(mutatedpersample,file = "Mutated_nonsynonymous_gene_per_sample.csv")
 write.csv(MutationsPerSample[index_changeprot,],file="Mutations_nonsynonymous_per_sample.csv")
-
+write.csv(MutationsPerSample_percent[index_changeprot,],file="Mutations_nonsynonymous_per_sample_percent.csv")
 
 # pdf("Allele_ratios_pairs_null_proteinchange.pdf")
 # for(i in 1:ncol(ADrep1))
